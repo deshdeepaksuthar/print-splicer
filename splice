@@ -1,0 +1,45 @@
+#!/bin/sh
+# This is to splice the pdf into its contituent pages
+if [[ $# -le 1 ]]
+then
+	echo " USAGE: "$0" <name of pdf> <number of pages>"
+	echo "Exiting"
+	exit
+fi
+for i in $(seq 1 $2)
+do
+	echo " Making "$i".pdf"
+	pdftk $1 cat $i output $i".pdf"
+done
+
+#
+# Arrange the pages in correct order
+#
+
+pages=$2
+if [[ -e temp  ]]
+then
+	echo " temp Folder already exits"
+else
+	mkdir temp
+fi
+halfpage=$(( $pages/2 ))
+qpage=$(( $halfpage/2 ))
+for i in $(seq 1 $qpage)
+do
+	pdftk $(($halfpage+ (2 * $i )))".pdf" $(($halfpage - 2*( $i - 1 ) -1 ))".pdf" \
+		$(($halfpage - 2*( $i - 1 ) ))".pdf" $(($halfpage+ (2 * $i ) -1 ))".pdf" \
+		cat output "temp/"$i".pdf"
+done
+
+#
+# making the final print file
+#
+
+cd temp
+pdftk $(seq -s".pdf " 1 $qpage)".pdf" cat output ../toprt.pdf
+cd ..
+
+echo " Cleaning up"
+rm -rf temp
+rm -r $( seq -s".pdf " 1 $2 )".pdf"

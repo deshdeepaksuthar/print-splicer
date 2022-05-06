@@ -1,0 +1,16 @@
+#!/bin/sh
+pages=$1
+if [[ -e temp  ]]
+then
+	echo " temp Folder already exits"
+else
+	mkdir temp
+fi
+halfpage=$(( $pages/2 ))
+qpage=$(( $halfpage/2 ))
+for i in $(seq 1 $qpage)
+do
+	pdftk $(($halfpage+ (2 * $i )))".pdf" $(($halfpage - 2*( $i - 1 ) -1 ))".pdf" \
+		$(($halfpage - 2*( $i - 1 ) ))".pdf" $(($halfpage+ (2 * $i ) -1 ))".pdf" \
+		cat output "temp/"$i".pdf"
+done

@@ -1,0 +1,4 @@
+#!/bin/sh
+cd temp
+pdftk $(seq -s".pdf " 1 $qpage)".pdf" cat output ../toprt.pdf
+cd ..

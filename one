@@ -1,0 +1,13 @@
+#!/bin/sh
+# This is to splice the pdf into its contituent pages
+if [[ $# -le 1 ]]
+then
+	echo " USAGE: "$0" <name of pdf> <number of pages>"
+	echo "Exiting"
+	exit
+fi
+for i in $(seq 1 $2)
+do
+	echo " Making "$i".pdf"
+	pdftk $1 cat $i output $i".pdf"
+done
